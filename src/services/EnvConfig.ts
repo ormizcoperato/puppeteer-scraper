@@ -1,29 +1,38 @@
 export class EnvConfig {
-  private static getString<K extends ConfigKeyNames>(key: K): ConfigKeys[K] {
-    const value = process.env[key];
-    if (value === undefined || value === "") {
-      throw new Error(
-        `Environment variable '${key}' is not defined or is empty`,
-      );
-    }
-    return value as ConfigKeys[K];
-  }
+	private static getEnv<K extends ConfigKeyNames>(key: K): string {
+		const value = process.env[key];
+		if (value === undefined || value === '') {
+			throw new Error(
+				`Environment variable '${key}' is not defined or is empty`
+			);
+		}
+		return value as string;
+	}
 
-  private static getNumber<K extends ConfigKeyNames>(key: K): ConfigKeys[K] {
-    const value = this.getString(key);
-    const numberValue = Number(value);
-    if (isNaN(numberValue)) {
-      throw new Error(`Environment variable '${key}' must be a valid number`);
-    }
-    return numberValue as ConfigKeys[K];
-  }
+	private static getString<K extends ConfigKeyNames>(key: K): ConfigKeys[K] {
+		const value = this.getEnv(key);
+		return value as ConfigKeys[K];
+	}
 
-  private static getBoolean<K extends ConfigKeyNames>(key: K): ConfigKeys[K] {
-    const value = this.getString(key);
-    if (value === "true") return true as ConfigKeys[K];
-    if (value === "false") return false as ConfigKeys[K];
-    throw new Error(`Environment variable '${key}' must be 'true' or 'false'`);
-  }
+	private static getNumber<K extends ConfigKeyNames>(key: K): ConfigKeys[K] {
+		const value = this.getEnv(key);
+		const numberValue = Number(value);
+		if (isNaN(numberValue)) {
+			throw new Error(
+				`Environment variable '${key}' must be a valid number`
+			);
+		}
+		return numberValue as ConfigKeys[K];
+	}
+
+	private static getBoolean<K extends ConfigKeyNames>(key: K): ConfigKeys[K] {
+		const value = this.getEnv(key);
+		if (value === 'true') return true as ConfigKeys[K];
+		if (value === 'false') return false as ConfigKeys[K];
+		throw new Error(
+			`Environment variable '${key}' must be "true" or "false"`
+		);
+	}
 
   static APP_UNCATEGORIZED_FOLDER_NAME(): string {
     return this.getString("APP_UNCATEGORIZED_FOLDER_NAME");
